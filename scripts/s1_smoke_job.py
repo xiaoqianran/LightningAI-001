@@ -49,11 +49,14 @@ def main() -> int:
     force_sample = os.environ.get("MOE_FORCE_SAMPLE", "0") == "1"
     prep_flag = "--force-sample" if force_sample else ""
 
-    # PyTorch CUDA image; install repo deps then run pipeline
+    # PyTorch image often has no git — use GitHub tarball
+    tarball = "https://codeload.github.com/xiaoqianran/LightningAI-001/tar.gz/refs/heads/main"
     command = f"""
 set -e
 cd /tmp
-git clone --depth 1 {repo} app || true
+apt-get update -qq && apt-get install -y -qq curl ca-certificates >/dev/null || true
+curl -sL {tarball} -o src.tgz
+mkdir -p app && tar -xzf src.tgz -C app --strip-components=1
 cd app
 pip install -q -r requirements-train.txt
 export PYTHONPATH=/tmp/app
@@ -62,13 +65,13 @@ python -m moe_zh.prepare_d0 {prep_flag} --max-bytes 30000000
 python -m moe_zh.train --resume auto --max-steps {max_steps}
 python -m moe_zh.generate
 echo '=== metrics ==='
-cat artifacts/metrics.json | head -c 2000 || true
-echo
+python -c "import json;m=json.load(open('artifacts/metrics.json'));print(m['train_loss'][0],'->',m['train_loss'][-1], m.get('val_loss'))"
 echo '=== generations ==='
 cat artifacts/generations_smoke.txt || true
 """.strip()
 
     print("submitting", name, "machine", machine, "interruptible", interruptible)
+    # Note: some teamspaces only accept certain accelerators; Machine.CPU works for smoke.
     job = Job.run(
         name=name,
         machine=machine,
