@@ -58,6 +58,6 @@ generate:
 job:
   machine: T4
   cloud: null          # platform default (cheapest path that works)
-  interruptible: true
+  interruptible: false   # on-demand only; do not use spot/preemptible
   max_runtime: 10800   # 3h hard cap
   max_steps: 5000

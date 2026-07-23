@@ -28,9 +28,10 @@ python main.py 001 run
 python main.py 002 prepare --config smoke --force-sample
 python main.py 002 train --config smoke --max-steps 200
 
-# 002 S2 mini（远程默认 T4，公开数据）
-python main.py 002 job --config mini --machine T4 --interruptible
+# 002 S2 mini（远程默认 T4 on-demand / 不可中断，公开数据）
+python main.py 002 job --config mini --machine T4
 ```
+
 
 也可进入实验目录：
 

@@ -41,7 +41,7 @@ Interruptible/spot 常更低，但以提交页实时价为准。
 | **高端备选** | A100（$2.19） | 仅当需要更大 batch/更快墙钟且仍 &lt;$3 |
 | **不用** | H100（$4.50） | 超预算 |
 | **cloud** | 默认（不强制贵厂） | 同卡选能 submit 且最终更便宜的路径 |
-| **interruptible** | **true** | 可 resume；省钱 |
+| **interruptible** | **false（不可中断）** | on-demand，避免 Pending 抢不到 / 中途被踢 |
 | **max_runtime** | 3h | 费用上限约 `0.19×3 ≈ $0.57`（T4 on-demand 量级） |
 
 **不选 A100/H100 做默认**：S2 模型仍小，T4 更符合「同需求最便宜」。
@@ -69,7 +69,9 @@ python main.py 002 prepare --config mini
 python main.py 002 train --config mini --max-steps 100
 
 # 远程 S2（T4）
-python main.py 002 job --config mini --machine T4 --interruptible --max-steps 5000
+python main.py 002 job --config mini --machine T4 --max-steps 5000
+# 默认 interruptible=false；仅调试省钱时才加 --interruptible
 ```
 
-环境变量：`LIGHTNING_USER_ID` / `LIGHTNING_API_KEY`，可选 `LIGHTNING_CLOUD=GCP|AWS`。
+环境变量：`LIGHTNING_USER_ID` / `LIGHTNING_API_KEY`，可选 `LIGHTNING_CLOUD=GCP|AWS`。  
+**默认全程 on-demand（不可中断）。**

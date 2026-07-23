@@ -6,8 +6,9 @@ Usage:
   python run.py prepare --config mini
   python run.py train --config mini --max-steps 5000
   python run.py generate --config mini
-  python run.py job --config mini --machine T4 --interruptible
+  python run.py job --config mini --machine T4
   python main.py 002 job --config mini --machine T4
+  # Always on-demand (non-interruptible) unless --interruptible is passed.
 """
 
 from __future__ import annotations
@@ -105,10 +106,9 @@ def cmd_job(args: argparse.Namespace) -> int:
     # Defaults: S2 -> T4 (cheapest GPU under $3/h per pricing page)
     default_machine = "T4" if prefix == "moe-zh-s2" else "CPU"
     machine_name = os.environ.get("LIGHTNING_MACHINE", args.machine or default_machine)
+    # Default: on-demand (non-interruptible). Only opt-in via flag/env.
     interruptible = (
-        os.environ.get("LIGHTNING_INTERRUPTIBLE", "0") == "1"
-        or args.interruptible
-        or prefix == "moe-zh-s2"
+        os.environ.get("LIGHTNING_INTERRUPTIBLE", "0") == "1" or args.interruptible
     )
     max_steps = args.max_steps or cfg.train.max_steps
     max_runtime = int(os.environ.get("LIGHTNING_MAX_RUNTIME", str(args.max_runtime or (10800 if prefix == "moe-zh-s2" else 3600))))

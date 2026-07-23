@@ -13,11 +13,12 @@ python main.py 002 prepare --config smoke --force-sample
 python main.py 002 train --config smoke --max-steps 200
 python main.py 002 job --config smoke --machine CPU
 
-# S2 mini（默认远程 T4 ≈ $0.19/h，interruptible）
+# S2 mini（默认远程 T4 ≈ $0.19/h，**不可中断 / on-demand**）
 python main.py 002 prepare --config mini
 python main.py 002 train --config mini
-python main.py 002 job --config mini --machine T4 --interruptible
+python main.py 002 job --config mini --machine T4
 ```
+
 
 ## 子命令
 
