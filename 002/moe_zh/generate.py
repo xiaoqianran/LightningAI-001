@@ -77,7 +77,8 @@ def main(argv: list[str] | None = None) -> int:
         print(text)
         print()
 
-    out_path = Path(args.out) if args.out else artifact / "generations_smoke.txt"
+    default_name = "generations_mini.txt" if "mini" in str(args.config) else "generations_smoke.txt"
+    out_path = Path(args.out) if args.out else artifact / default_name
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"wrote {out_path}")

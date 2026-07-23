@@ -1,38 +1,36 @@
 # 002 — 最小简体中文 MoE
 
-S1 smoke：小 MoE（4 层 / 256 维 / 4 expert top-1）+ 中文语料 + 可 resume。
+| 阶段 | config | 说明 |
+|------|--------|------|
+| **S1 smoke** | `smoke` | 4 层 / 256 / 4 expert top-1，样例或小数据，管线验证 |
+| **S2 mini** | `mini` | 6 层 / 384 / 8 expert top-2，公开中文 ~250MB，5000 step |
 
 ## 用法
 
 ```bash
-# 根目录
-python main.py 002 prepare --force-sample
-python main.py 002 train --max-steps 200
-python main.py 002 generate
-python main.py 002 job              # 远程 Lightning Job
+# S1
+python main.py 002 prepare --config smoke --force-sample
+python main.py 002 train --config smoke --max-steps 200
+python main.py 002 job --config smoke --machine CPU
 
-# 或
-cd 002
-python run.py prepare --force-sample
-python run.py train --max-steps 50
-```
-
-## 依赖
-
-```bash
-cd 002
-python -m venv .venv && .venv/bin/pip install -e .
-# 或 pip install -r 见 pyproject.toml
+# S2 mini（默认远程 T4 ≈ $0.19/h，interruptible）
+python main.py 002 prepare --config mini
+python main.py 002 train --config mini
+python main.py 002 job --config mini --machine T4 --interruptible
 ```
 
 ## 子命令
 
 | 命令 | 作用 |
 |------|------|
-| `prepare` | 公开/样例数据 + SentencePiece + bin |
-| `train` | 训练（`--resume auto` 默认） |
-| `generate` | 从 `artifacts/checkpoints/last.pt` 生成 |
-| `job` | 提交远程 Job（默认 CPU；可用 `LIGHTNING_MACHINE`） |
+| `prepare` | 数据 + SentencePiece + bin（`--config smoke\|mini`） |
+| `train` | 训练（`--resume auto`） |
+| `generate` | 从 last.pt 生成 |
+| `job` | 远程 Lightning Job |
+
+## GPU 选型（S2 默认）
+
+见 `docs/002-gpu-and-s2.md`：标价 T4 **~$0.19/h**（最便宜且够用），A100 ~$2.19，H100 ~$4.50（超 $3 预算不用）。
 
 ## 结构
 
@@ -40,9 +38,8 @@ python -m venv .venv && .venv/bin/pip install -e .
 002/
   run.py
   configs/smoke.yaml
-  data/sample/zh_smoke.txt
-  moe_zh/                 # 模型与训练包
-  artifacts/              # 本地产物（gitignore）
+  configs/mini.yaml
+  data/sample/
+  moe_zh/
+  artifacts/          # gitignore
 ```
-
-设计说明见仓库 `docs/002-s1-smoke-design.md`。

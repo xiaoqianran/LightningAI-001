@@ -1,0 +1,63 @@
+# S2 mini — public Chinese data, longer train, still small MoE
+name: mini
+
+model:
+  n_layer: 6
+  n_embd: 384
+  n_head: 6
+  n_expert: 8
+  top_k: 2
+  expert_ffn_mult: 4
+  vocab_size: 16000
+  block_size: 512
+  dropout: 0.05
+
+train:
+  max_steps: 5000
+  batch_size: 32
+  grad_accum: 2
+  lr: 2.0e-4
+  weight_decay: 0.1
+  beta1: 0.9
+  beta2: 0.95
+  warmup_steps: 100
+  min_lr_ratio: 0.1
+  grad_clip: 1.0
+  balance_loss_coef: 0.01
+  log_every: 25
+  eval_every: 250
+  ckpt_every: 250
+  seed: 42
+  num_workers: 2
+
+data:
+  # ~200–300MB public wiki slice (download when not --force-sample)
+  max_bytes: 250000000
+  train_ratio: 0.98
+  seed: 42
+
+paths:
+  data_dir: data/d1
+  artifact_dir: artifacts/mini
+  tokenizer_prefix: spm_zh_16k
+
+generate:
+  max_new_tokens: 96
+  temperature: 0.8
+  top_k: 50
+  prompts:
+    - "今天天气"
+    - "人工智能是"
+    - "北京是"
+    - "请写一句问候"
+    - "春天来了"
+    - "深度学习可以"
+    - "中国的历史"
+
+# Recommended remote job defaults (see docs/002-gpu-and-s2.md)
+job:
+  machine: T4
+  cloud: null          # platform default (cheapest path that works)
+  interruptible: true
+  max_runtime: 10800   # 3h hard cap
+  max_steps: 5000

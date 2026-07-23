@@ -42,7 +42,9 @@ def _load_sample(max_bytes: int) -> list[str]:
         raise RuntimeError("sample file produced no valid lines")
     total = 0
     i = 0
-    while total < max_bytes and i < 500_000:
+    # cap expansion so sample fallback cannot runaway on huge max_bytes
+    hard_cap = min(max_bytes, 50_000_000)
+    while total < hard_cap and i < 2_000_000:
         ln = base[i % len(base)]
         # slight variation so SP sees more patterns when repeating
         if i // len(base) > 0 and i % 7 == 0:

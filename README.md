@@ -24,26 +24,27 @@ docs/            # 计划与设计说明
 # 001 Hello Job（提交到 Lightning 并等待）
 python main.py 001 run
 
-# 002 中文 MoE
-python main.py 002 prepare --force-sample
-python main.py 002 train --max-steps 200
-python main.py 002 generate
-python main.py 002 job          # 远程 Lightning Job
+# 002 S1 smoke
+python main.py 002 prepare --config smoke --force-sample
+python main.py 002 train --config smoke --max-steps 200
+
+# 002 S2 mini（远程默认 T4，公开数据）
+python main.py 002 job --config mini --machine T4 --interruptible
 ```
 
 也可进入实验目录：
 
 ```bash
 cd 001 && python run.py run
-cd 002 && python run.py train --max-steps 50
+cd 002 && python run.py train --config mini --max-steps 100
 ```
 
 ## 约定
 
 - 每个实验自包含：`run.py` + `README.md` + 可选 `pyproject.toml`
-- 数据 / 权重默认不入库；生成于 `data/d0/`、`artifacts/`
+- 数据 / 权重默认不入库；生成于 `data/d0|d1/`、`artifacts/`
 - 远程 Job 默认 teamspace：`seachenxyt/seachenxyt`（可用环境变量覆盖）
-- 同卡型优先更便宜商家；GPU 单价目标 &lt; $3/h（见 docs）
+- GPU：同卡选更便宜路径；预算 &lt; $3/h；S2 默认 **T4**（见 `docs/002-gpu-and-s2.md`）
 
 ## 仓库
 
