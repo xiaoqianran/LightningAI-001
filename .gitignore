@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.env.*
+
+# Lightning / local secrets (never commit keys)
+.lightning/
+*.pem
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Logs & artifacts
+*.log
+/artifacts/
+/outputs/

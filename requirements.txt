@@ -1,0 +1,2 @@
+# Lightning AI platform SDK + CLI (`lightning` command)
+lightning-sdk>=2026.7.22
