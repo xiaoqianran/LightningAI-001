@@ -1,0 +1,22 @@
+[project]
+name = "lightningai-lab-002"
+version = "0.1.0"
+description = "Minimal Simplified-Chinese MoE smoke on Lightning AI"
+requires-python = ">=3.11"
+dependencies = [
+  "torch>=2.2.0",
+  "sentencepiece>=0.2.0",
+  "pyyaml>=6.0",
+  "tqdm>=4.66.0",
+  "numpy>=1.26.0",
+  "datasets>=2.18.0",
+  "lightning-sdk>=2026.7.22",
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["moe_zh*"]

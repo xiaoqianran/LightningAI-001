@@ -1,0 +1,11 @@
+[project]
+name = "lightningai-lab-001"
+version = "0.1.0"
+description = "Hello Lightning Job smoke"
+requires-python = ">=3.11"
+dependencies = [
+  "lightning-sdk>=2026.7.22",
+]
+
+[project.scripts]
+lab001 = "run:main"

@@ -1,8 +1,0 @@
-# Training deps (CPU or GPU). Prefer a venv.
-torch>=2.2.0
-sentencepiece>=0.2.0
-pyyaml>=6.0
-tqdm>=4.66.0
-numpy>=1.26.0
-# Optional: public wiki download for prepare_d0
-datasets>=2.18.0

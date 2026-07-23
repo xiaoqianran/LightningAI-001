@@ -2,29 +2,42 @@
 __pycache__/
 *.py[cod]
 *.egg-info/
+build/
+dist/
+.wheels/
+
+# Virtual envs
 .venv/
 venv/
+
+# Datasets & checkpoints (regenerate via prepare/train)
+**/data/d0/
+**/artifacts/
+**/checkpoints/
+*.bin
+*.pt
+*.pth
+*.onnx
+# keep sample corpora
+!**/data/sample/**
+!**/data/sample/**/*
+
+# Tokenizer artifacts from train
+**/spm_*.model
+**/spm_*.vocab
+
+# Lightning secrets
+.lightning/
 .env
 .env.*
-
-# Lightning / local secrets (never commit keys)
-.lightning/
-*.pem
 
 # IDE / OS
 .idea/
 .vscode/
 .DS_Store
-*.swp
+Thumbs.db
 
-# Logs & artifacts
+# logs / uv
 *.log
-/artifacts/
-/outputs/
-
-# Prepared data (regenerate via prepare_d0)
-/data/d0/
-*.bin
-*.model
-*.vocab
-!data/sample/**
+.cache/
+uv.lock

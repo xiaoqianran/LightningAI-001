@@ -1,70 +1,51 @@
-# LightningAI-001
+# LightningAI-Lab
 
-Lightning AI 平台学习仓库：从 **Batch Job 基础提交** 开始，对照官方文档逐步练习 Studio / Job / Deployment。
+Lightning AI 实验台：编号目录做最小可跑 Job / 训练冒烟（风格对齐 [cuda-lab](https://github.com/xiaoqianran/cuda-lab)）。
 
-默认 teamspace：`seachenxyt/seachenxyt`（可用环境变量覆盖）。
-
-## 目录
+## 结构
 
 ```text
-LightningAI-001/
-├── README.md
-├── requirements.txt
-├── docs/
-│   └── 01-basic-submit.md      # 第一课说明
-├── examples/
-│   └── 01_hello_job.py         # SDK：提交 → 等待 → 日志
-└── scripts/
-    └── 01_hello_job.sh         # CLI：等价提交
+main.py          # 入口，调度到 001 / 002 / ...
+001/             # Hello Job（CPU Docker 冒烟）
+002/             # 最小简体中文 MoE（prepare / train / generate / job）
+docs/            # 计划与设计说明
 ```
 
-## 快速开始
+## 环境
 
-### 1. 安装
+- Python 3.11+
+- [Lightning AI](https://lightning.ai) 账号：`LIGHTNING_USER_ID` + `LIGHTNING_API_KEY` 或 `lightning login`
+- 001：`pip install lightning-sdk`
+- 002：见 `002/pyproject.toml`（torch / sentencepiece 等）
+
+## 用法
 
 ```bash
-cd LightningAI-001
-pip install -r requirements.txt
-# 或已用 uv tool install lightning-sdk，确保 PATH 含 lightning
+# 001 Hello Job（提交到 Lightning 并等待）
+python main.py 001 run
+
+# 002 中文 MoE
+python main.py 002 prepare --force-sample
+python main.py 002 train --max-steps 200
+python main.py 002 generate
+python main.py 002 job          # 远程 Lightning Job
 ```
 
-### 2. 登录
+也可进入实验目录：
 
 ```bash
-export LIGHTNING_USER_ID=...
-export LIGHTNING_API_KEY=...
-# 或
-lightning login
+cd 001 && python run.py run
+cd 002 && python run.py train --max-steps 50
 ```
 
-### 3. 第一课：基础提交（Hello CPU Job）
+## 约定
 
-**推荐（会等待并打印日志）：**
+- 每个实验自包含：`run.py` + `README.md` + 可选 `pyproject.toml`
+- 数据 / 权重默认不入库；生成于 `data/d0/`、`artifacts/`
+- 远程 Job 默认 teamspace：`seachenxyt/seachenxyt`（可用环境变量覆盖）
+- 同卡型优先更便宜商家；GPU 单价目标 &lt; $3/h（见 docs）
 
-```bash
-python examples/01_hello_job.py
-```
+## 仓库
 
-**仅 CLI 提交：**
-
-```bash
-bash scripts/01_hello_job.sh
-```
-
-详见 [docs/01-basic-submit.md](docs/01-basic-submit.md)。
-
-## 课程规划
-
-| # | 主题 | 状态 |
-|---|---|---|
-| 01 | 基础提交（Docker + CPU hello） | ✅ 已跑通 |
-| 02 | 中文 MoE 总计划 | ✅ [docs/02](docs/02-chinese-moe-train-plan.md) |
-| 03 | **S1 Smoke 设计** | ✅ [docs/03-s1-smoke-design.md](docs/03-s1-smoke-design.md) |
-| 04 | S1 实现 + GPU Job | 待写 |
-| 05 | S2 Mini 训练 | 待写 |
-
-## 参考
-
-- 本地文档索引：docs-mcp `library=lightning-ai`（Batch Jobs / CLI / SDK）
-- 在线：[Batch jobs](https://lightning.ai/docs/platform/inference/batch-jobs)
-- 官方 skills：`Lightning-AI/skills` → `lightning-jobs`
+- 远程：https://github.com/xiaoqianran/LightningAI-Lab  
+- 前身：`LightningAI-001`（已重命名）
