@@ -21,3 +21,10 @@ venv/
 *.log
 /artifacts/
 /outputs/
+
+# Prepared data (regenerate via prepare_d0)
+/data/d0/
+*.bin
+*.model
+*.vocab
+!data/sample/**

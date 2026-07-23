@@ -1,0 +1,52 @@
+# S1 smoke config — minimal Chinese MoE
+name: smoke
+
+model:
+  n_layer: 4
+  n_embd: 256
+  n_head: 4
+  n_expert: 4
+  top_k: 1
+  expert_ffn_mult: 2
+  vocab_size: 8000
+  block_size: 256
+  dropout: 0.0
+
+train:
+  max_steps: 2000
+  batch_size: 32
+  grad_accum: 1
+  lr: 3.0e-4
+  weight_decay: 0.1
+  beta1: 0.9
+  beta2: 0.95
+  warmup_steps: 50
+  min_lr_ratio: 0.1
+  grad_clip: 1.0
+  balance_loss_coef: 0.01
+  log_every: 20
+  eval_every: 200
+  ckpt_every: 200
+  seed: 42
+  num_workers: 0
+
+data:
+  max_bytes: 30000000
+  train_ratio: 0.98
+  seed: 42
+
+paths:
+  data_dir: data/d0
+  artifact_dir: artifacts
+  tokenizer_prefix: spm_zh_8k
+
+generate:
+  max_new_tokens: 64
+  temperature: 0.8
+  top_k: 50
+  prompts:
+    - "今天天气"
+    - "人工智能是"
+    - "北京是"
+    - "请写一句问候"
+    - "春天来了"
