@@ -57,11 +57,11 @@ bash scripts/01_hello_job.sh
 
 | # | 主题 | 状态 |
 |---|---|---|
-| 01 | 基础提交（Docker + CPU hello） | ✅ |
-| 02 | Studio Job | 待写 |
-| 03 | GPU Job + 产物 | 待写 |
-| 04 | 超参扫描 / 流水线 | 待写 |
-| 05 | 多机 MMT | 待写 |
+| 01 | 基础提交（Docker + CPU hello） | ✅ 已跑通 |
+| 02 | 中文 MoE 总计划 | ✅ [docs/02](docs/02-chinese-moe-train-plan.md) |
+| 03 | **S1 Smoke 设计** | ✅ [docs/03-s1-smoke-design.md](docs/03-s1-smoke-design.md) |
+| 04 | S1 实现 + GPU Job | 待写 |
+| 05 | S2 Mini 训练 | 待写 |
 
 ## 参考
 
