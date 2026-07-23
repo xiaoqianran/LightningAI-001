@@ -8,7 +8,7 @@ Usage:
   python run.py generate --config mini
   python run.py job --config mini --machine T4
   python main.py 002 job --config mini --machine T4
-  # Always on-demand (non-interruptible) unless --interruptible is passed.
+  # Jobs are always on-demand (non-interruptible).
 """
 
 from __future__ import annotations
@@ -106,10 +106,8 @@ def cmd_job(args: argparse.Namespace) -> int:
     # Defaults: S2 -> T4 (cheapest GPU under $3/h per pricing page)
     default_machine = "T4" if prefix == "moe-zh-s2" else "CPU"
     machine_name = os.environ.get("LIGHTNING_MACHINE", args.machine or default_machine)
-    # Default: on-demand (non-interruptible). Only opt-in via flag/env.
-    interruptible = (
-        os.environ.get("LIGHTNING_INTERRUPTIBLE", "0") == "1" or args.interruptible
-    )
+    # Always on-demand (user requirement: never interruptible/spot).
+    interruptible = False
     max_steps = args.max_steps or cfg.train.max_steps
     max_runtime = int(os.environ.get("LIGHTNING_MAX_RUNTIME", str(args.max_runtime or (10800 if prefix == "moe-zh-s2" else 3600))))
     max_bytes = args.max_bytes or cfg.data.max_bytes
@@ -228,7 +226,6 @@ def main(argv: list[str] | None = None) -> int:
     sj.add_argument("--max-bytes", type=int, default=None)
     sj.add_argument("--force-sample", action="store_true", help="use sample corpus")
     sj.add_argument("--no-force-sample", action="store_true", help="prefer public wiki")
-    sj.add_argument("--interruptible", action="store_true")
     sj.add_argument("--no-wait", action="store_true")
     sj.set_defaults(func=cmd_job)
 

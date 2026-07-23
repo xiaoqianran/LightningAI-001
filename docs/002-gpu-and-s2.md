@@ -18,7 +18,7 @@
 
 多卡 `_X_N` 通常按卡数倍增，S2 默认 **单卡**。
 
-Interruptible/spot 常更低，但以提交页实时价为准。
+本仓库 **一律 on-demand**，不以 spot 报价为准。
 
 ## 2. 本账号实测可提交性
 
@@ -70,8 +70,7 @@ python main.py 002 train --config mini --max-steps 100
 
 # 远程 S2（T4）
 python main.py 002 job --config mini --machine T4 --max-steps 5000
-# 默认 interruptible=false；仅调试省钱时才加 --interruptible
 ```
 
 环境变量：`LIGHTNING_USER_ID` / `LIGHTNING_API_KEY`，可选 `LIGHTNING_CLOUD=GCP|AWS`。  
-**默认全程 on-demand（不可中断）。**
+**全程 on-demand（不可中断）；代码不再支持 spot/可中断提交。**
