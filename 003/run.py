@@ -35,6 +35,19 @@ def main(argv: list[str] | None = None) -> int:
     sc.add_argument("--message", required=True)
     sc.set_defaults(func=lambda a: _chat(a.message))
 
+    ss = sub.add_parser("sandbox-create", help="create remote Lightning Sandbox")
+    ss.add_argument("--name", default="lab-agent")
+    ss.add_argument("--teamspace", default="seachenxyt/seachenxyt")
+    ss.set_defaults(func=lambda a: _sandbox_create(a.name, a.teamspace))
+
+    spb = sub.add_parser("sandbox-probe", help="probe sandbox capability limits")
+    spb.add_argument("--id", default=None, help="sandbox id (or LIGHTNING_SANDBOX_ID)")
+    spb.set_defaults(func=lambda a: _sandbox_probe(a.id))
+
+    sdel = sub.add_parser("sandbox-delete", help="delete sandbox")
+    sdel.add_argument("--id", required=True)
+    sdel.set_defaults(func=lambda a: _sandbox_delete(a.id))
+
     args = p.parse_args(argv)
     return int(args.func(args))
 
@@ -60,6 +73,37 @@ def _chat(message: str) -> int:
     from nim_client import chat_text
 
     print(chat_text(message))
+    return 0
+
+
+def _sandbox_create(name: str, teamspace: str) -> int:
+    from sandbox_tools import sandbox_create
+
+    sid = sandbox_create(name=name, teamspace=teamspace)
+    print(sid)
+    print(f"export LIGHTNING_SANDBOX_ID={sid}")
+    return 0
+
+
+def _sandbox_probe(sid: str | None) -> int:
+    import json
+    import os
+
+    from sandbox_tools import probe_limits
+
+    sid = sid or os.environ.get("LIGHTNING_SANDBOX_ID") or ""
+    if not sid:
+        print("need --id or LIGHTNING_SANDBOX_ID", file=sys.stderr)
+        return 2
+    results = probe_limits(sid)
+    print(json.dumps(results, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _sandbox_delete(sid: str) -> int:
+    from sandbox_tools import sandbox_delete
+
+    print(sandbox_delete(sid))
     return 0
 
 

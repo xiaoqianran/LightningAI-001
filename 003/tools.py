@@ -100,8 +100,27 @@ def tool_lab_help() -> str:
 - 002 smoke: python main.py 002 prepare --config smoke --force-sample
 - 002 S2: python main.py 002 job --config mini --machine T4
 - 003: this NIM agent (export NVIDIA_API_KEY first)
+- Sandbox: needs LIGHTNING_SANDBOX_API_KEY (org key seachenxyt-org); remote isolated VM
 Jobs always on-demand (non-interruptible). S2 default GPU: T4.
 """
+
+
+def tool_sandbox_run(command: str) -> str:
+    """Run command in existing sandbox (LIGHTNING_SANDBOX_ID)."""
+    import os
+
+    sid = os.environ.get("LIGHTNING_SANDBOX_ID", "").strip()
+    if not sid:
+        return (
+            "No LIGHTNING_SANDBOX_ID set. Create one first: "
+            "python main.py 003 sandbox-create"
+        )
+    try:
+        from sandbox_tools import sandbox_run
+
+        return sandbox_run(sid, command)
+    except Exception as e:  # noqa: BLE001
+        return f"sandbox error: {e}"
 
 
 TOOLS_SPEC: list[dict[str, Any]] = [
@@ -156,6 +175,21 @@ TOOLS_SPEC: list[dict[str, Any]] = [
             "parameters": {"type": "object", "properties": {}},
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "sandbox_run",
+            "description": (
+                "Run a bash command inside the remote Lightning Sandbox "
+                "(isolated cloud VM). Use for untrusted/experimental code."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {"command": {"type": "string"}},
+                "required": ["command"],
+            },
+        },
+    },
 ]
 
 
@@ -166,6 +200,7 @@ _HANDLERS: dict[str, Callable[..., str]] = {
     ),
     "run_shell": lambda **kw: tool_run_shell(kw["command"]),
     "lab_help": lambda **kw: tool_lab_help(),
+    "sandbox_run": lambda **kw: tool_sandbox_run(kw["command"]),
 }
 
 

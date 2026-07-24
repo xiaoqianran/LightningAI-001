@@ -32,8 +32,23 @@ python run.py ping                 # 测 API 是否通
 | `read_file` | 读文本文件（限大小） |
 | `run_shell` | 仅允许前缀白名单命令 |
 | `lab_help` | 返回 LightningAI-Lab 用法摘要 |
+| `sandbox_run` | **在远程 Lightning Sandbox 执行 bash**（需 `LIGHTNING_SANDBOX_ID`） |
 
-**不会** 默认提交 Lightning Job / 访问任意网络（除 NIM API）。
+**不会** 默认提交 Lightning Job。
+
+## 远程 Sandbox
+
+```bash
+# 需要 org-scoped key（org 名是 seachenxyt-org，不是 seachenxyt）
+export LIGHTNING_SANDBOX_API_KEY=$(lightning api-key get --org seachenxyt-org)
+
+export LIGHTNING_SANDBOX_ID=$(python main.py 003 sandbox-create --name lab-agent | head -1)
+python main.py 003 sandbox-probe --id "$LIGHTNING_SANDBOX_ID"
+python main.py 003 run --task "在 sandbox 里执行 python --version"
+python main.py 003 sandbox-delete --id "$LIGHTNING_SANDBOX_ID"
+```
+
+能力上限见 `docs/003-sandbox-ceiling.md`。
 
 ## 依赖
 
