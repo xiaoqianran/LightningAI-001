@@ -26,10 +26,13 @@ venv/
 **/spm_*.model
 **/spm_*.vocab
 
-# Lightning secrets
+# Lightning / API secrets
 .lightning/
 .env
 .env.*
+**/secrets/
+*.pem
+*nvapi*
 
 # IDE / OS
 .idea/

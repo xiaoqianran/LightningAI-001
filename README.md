@@ -5,9 +5,10 @@ Lightning AI 实验台：编号目录做最小可跑 Job / 训练冒烟（风格
 ## 结构
 
 ```text
-main.py          # 入口，调度到 001 / 002 / ...
+main.py          # 入口，调度到 001 / 002 / 003 ...
 001/             # Hello Job（CPU Docker 冒烟）
 002/             # 最小简体中文 MoE（prepare / train / generate / job）
+003/             # NVIDIA NIM Agent（工具白名单执行）
 docs/            # 计划与设计说明
 ```
 
@@ -30,6 +31,10 @@ python main.py 002 train --config smoke --max-steps 200
 
 # 002 S2 mini（远程默认 T4 on-demand / 不可中断，公开数据）
 python main.py 002 job --config mini --machine T4
+
+# 003 NIM Agent（需 export NVIDIA_API_KEY，勿把 key 提交 git）
+python main.py 003 ping
+python main.py 003 run --task "列出 002 目录并说明如何提交 S2"
 ```
 
 
